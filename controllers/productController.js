@@ -1,7 +1,9 @@
 const categorySchema = require("../models/categorySchema");
+const subcategorySchema = require("../models/subcategorySchema");
 
+// function for creating products
 const createProduct = async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, Subcategory } = req.body;
   try {
     if (!name) {
       return res.status(400).json({ error: "Required fields are missing" });
@@ -15,6 +17,7 @@ const createProduct = async (req, res) => {
     const product = new categorySchema({
       name,
       description,
+      Subcategory,
     });
     await product.save();
     res.status(201).json({ message: "Product created", product });
@@ -22,6 +25,38 @@ const createProduct = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+// function for update categories
+const UpdateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
+    const product = await categorySchema.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+    if (!product) return res.status(404).json({ error: "Product not found" });
+
+    res.status(200).json({ message: "Product updated", product });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+// function for update Subcategories
+const UpdateSubCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
+    const product = await subcategorySchema.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+    if (!product) return res.status(404).json({ error: "Product not found" });
+
+    res.status(200).json({ message: "Sub-Product updated", product });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// function for get all products
 const getAllProducts = async (req, res) => {
   try {
     const products = await categorySchema.find({}).populate("name");
@@ -31,6 +66,8 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// function for Get Singal products
 const getSingalProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,4 +78,37 @@ const getSingalProduct = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-module.exports = { createProduct, getAllProducts, getSingalProduct };
+// function for delete catagory product
+const DeleteCatagory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await categorySchema.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ error: "Product not found" });
+
+    res.status(200).json({ message: "Catagory product deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+// function for delete sub catagory product
+const DeleteSubCatagory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await subcategorySchema.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ error: "Product not found" });
+
+    res.status(200).json({ message: "Sub-Catagory product deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  getSingalProduct,
+  UpdateCategory,
+  UpdateSubCategory,
+  DeleteCatagory,
+  DeleteSubCatagory,
+};
