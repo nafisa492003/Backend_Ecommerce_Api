@@ -1,36 +1,38 @@
-const categorySchema = require("../models/categorySchema");
-const subcategorySchema = require("../models/subcategorySchema");
+const productSchema = require("../models/productSchema");
 
-// function for creating products
 const createProduct = async (req, res) => {
-  const { name, description, Subcategory } = req.body;
   try {
-    if (!name) {
-      return res.status(400).json({ error: "Required fields are missing" });
-    }
-    const existingCategory = await categorySchema.findOne({ name });
-    if (existingCategory) {
+    const { name, description, price, color, category, subcategory } = req.body;
+    if (!name || !price || !category || !subcategory) {
       return res
         .status(400)
-        .json({ error: "This name is already used please use another name" });
+        .json({ error: "All required fields must be provided" });
     }
-    const product = new categorySchema({
+
+    const newProduct = new productSchema({
       name,
       description,
-      Subcategory,
+      price,
+      color,
+      category,
+      subcategory,
     });
-    await product.save();
-    res.status(201).json({ message: "Product created", product });
+
+    await newProduct.save();
+
+    res
+      .status(201)
+      .json({ message: "Product created successfully", product: newProduct });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 };
-// function for update categories
-const UpdateCategory = async (req, res) => {
+// function for update products
+const UpdateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body };
-    const product = await categorySchema.findByIdAndUpdate(id, updateData, {
+    const product = await productSchema.findByIdAndUpdate(id, updateData, {
       new: true,
     });
     if (!product) return res.status(404).json({ error: "Product not found" });
@@ -40,26 +42,11 @@ const UpdateCategory = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-// function for update Subcategories
-const UpdateSubCategory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = { ...req.body };
-    const product = await subcategorySchema.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
-    if (!product) return res.status(404).json({ error: "Product not found" });
-
-    res.status(200).json({ message: "Sub-Product updated", product });
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
-};
 
 // function for get all products
-const getAllProducts = async (req, res) => {
+const getAllProduct = async (req, res) => {
   try {
-    const products = await categorySchema.find({}).populate("name");
+    const products = await productSchema.find({}).populate("name");
 
     res.status(200).json(products);
   } catch (err) {
@@ -68,10 +55,10 @@ const getAllProducts = async (req, res) => {
 };
 
 // function for Get Singal products
-const getSingalProduct = async (req, res) => {
+const getSingalproduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const singalCategory = await categorySchema.findById({ _id: id });
+    const singalCategory = await productSchema.findById({ _id: id });
 
     res.status(200).json(singalCategory);
   } catch (err) {
@@ -79,10 +66,10 @@ const getSingalProduct = async (req, res) => {
   }
 };
 // function for delete catagory product
-const DeleteCatagory = async (req, res) => {
+const Deleteproduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await categorySchema.findByIdAndDelete(id);
+    const deleted = await productSchema.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ error: "Product not found" });
 
     res.status(200).json({ message: "Catagory product deleted" });
@@ -90,25 +77,10 @@ const DeleteCatagory = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-// function for delete sub catagory product
-const DeleteSubCatagory = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = await subcategorySchema.findByIdAndDelete(id);
-    if (!deleted) return res.status(404).json({ error: "Product not found" });
-
-    res.status(200).json({ message: "Sub-Catagory product deleted" });
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-};
-
 module.exports = {
   createProduct,
-  getAllProducts,
-  getSingalProduct,
-  UpdateCategory,
-  UpdateSubCategory,
-  DeleteCatagory,
-  DeleteSubCatagory,
+  UpdateProduct,
+  getAllProduct,
+  getSingalproduct,
+  Deleteproduct,
 };

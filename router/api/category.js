@@ -1,21 +1,17 @@
 const { Router } = require("express");
 const {
-  createProduct,
-  getAllProducts,
-  getSingalProduct,
+  createCategory,
+  getAllCategory,
+  getSingalCategory,
   UpdateCategory,
-  UpdateSubCategory,
   DeleteCatagory,
-  DeleteSubCatagory,
-} = require("../../controllers/productController");
+} = require("../../controllers/CategoryproductController");
 
 const router = Router();
 
-router.post("/createProduct", createProduct);
+router.post("/createCategory", createCategory);
 router.put("/updateCatagory/:id", UpdateCategory);
-router.put("/updateSubCategory/:id",UpdateSubCategory)
-router.get("/allProduct", getAllProducts);
-router.get("/getSingalProduct/:id", getSingalProduct);
+router.get("/getAllCategory", getAllCategory);
+router.get("/getSingalCategory/:id", getSingalCategory);
 router.delete("/deleteCatagory/:id",DeleteCatagory)
-router.delete("/deleteSubCatagory/:id",DeleteSubCatagory)
 module.exports = router;
