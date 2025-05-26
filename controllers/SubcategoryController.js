@@ -13,7 +13,6 @@ const SubcategoryContoller = async (req, res) => {
     const subcategory = new subcategorySchema({
       name,
       description,
-      price,
       category: foundcategory._id,
     });
     await subcategory.save();

@@ -8,12 +8,14 @@ const createProduct = async (req, res) => {
         .status(400)
         .json({ error: "All required fields must be provided" });
     }
-
+    // Cloudinary image URL
+    const image = req.file ? req.file.path : null;
     const newProduct = new productSchema({
       name,
       description,
       price,
       color,
+      image,
       category,
       subcategory,
     });
