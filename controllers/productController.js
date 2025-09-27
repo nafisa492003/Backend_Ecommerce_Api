@@ -3,7 +3,7 @@ const productSchema = require("../models/productSchema");
 const createProduct = async (req, res) => {
   try {
     const { name, description, price, color, category, subcategory } = req.body;
-    if (!name || !price || !category || !subcategory) {
+    if (!name || !price || !category) {
       return res
         .status(400)
         .json({ error: "All required fields must be provided" });
