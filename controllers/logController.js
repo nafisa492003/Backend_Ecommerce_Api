@@ -80,5 +80,11 @@ const dashbord = (req, res) => {
   }
 };
 
+const getCurrentUser = (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(200).json({ user: null });
+  }
+  return res.status(200).json({ user: req.session.user });
+};
 
-module.exports = { logInController, dashbord, logout };
+module.exports = { logInController, dashbord, logout , getCurrentUser};

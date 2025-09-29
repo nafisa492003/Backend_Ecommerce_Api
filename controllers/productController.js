@@ -2,8 +2,13 @@ const productSchema = require("../models/productSchema");
 
 const createProduct = async (req, res) => {
   try {
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
     const { name, description, price, color, category, subcategory } = req.body;
     if (!name || !price || !category) {
+      console.log("req.body:", req.body);
+      console.log("req.file:", req.file);
+
       return res
         .status(400)
         .json({ error: "All required fields must be provided" });
@@ -48,8 +53,9 @@ const UpdateProduct = async (req, res) => {
 // function for get all products
 const getAllProduct = async (req, res) => {
   try {
-    const products = await productSchema.find({}).populate("name");
-
+    const products = await productSchema.find({})
+      .populate("category", "name")
+      .populate("subcategory", "name");
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ error: "Server error" });

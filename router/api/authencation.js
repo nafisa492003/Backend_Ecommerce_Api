@@ -4,7 +4,7 @@ const {
   otpController,
   resendOtpController,
 } = require("../../controllers/otpController");
-const {logInController, dashbord, logout} = require("../../controllers/logController");
+const {logInController, dashbord, logout, getCurrentUser} = require("../../controllers/logController");
 const Authmiddlewere = require("../../middlewere/AuthMiddlewere");
 const RoleMiddlewere = require("../../middlewere/RoleMiddlewere");
 
@@ -15,6 +15,7 @@ route.post("/otpValidation", otpController);
 route.post("/resendOtp", resendOtpController);
 route.post("/login", logInController);
 route.post("/logout", logout);
+route.get("/me" , getCurrentUser);
 route.get("/admmin-dashboard",Authmiddlewere,RoleMiddlewere("admin") , dashbord);
 route.get("/user-dashboard",Authmiddlewere,RoleMiddlewere("user") , dashbord);
 module.exports = route;

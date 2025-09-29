@@ -4,7 +4,7 @@ const emailVaraification= async (email ,otp)=>{
         service: "gmail",
         auth: {
           user: "afifayesminnafisa@gmail.com",
-          pass: "tauf eryl yuax jkwi",
+          pass: "bgdo ryik fpgp lhkr",
         },
       });
 

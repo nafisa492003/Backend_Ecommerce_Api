@@ -1,28 +1,38 @@
 const categorySchema = require("../models/categorySchema");
 const subcategorySchema = require("../models/subcategorySchema");
 
-const SubcategoryContoller = async (req, res) => {
+const SubcategoryController = async (req, res) => {
   try {
     const { name, description, category } = req.body;
 
     if (!name || !category) {
       return res.status(400).json({ error: "Required fields are missing" });
     }
-    const foundcategory = await categorySchema.findOne({ name: category });
+
+    // Find category by ID instead of name
+    const foundCategory = await categorySchema.findById(category);
+    if (!foundCategory) {
+      return res.status(404).json({ error: "Category not found" });
+    }
 
     const subcategory = new subcategorySchema({
       name,
       description,
-      category: foundcategory._id,
+      category: foundCategory._id,
     });
+
     await subcategory.save();
-    await categorySchema.findOneAndUpdate(
-      { _id: foundcategory._id },
+
+    // Push subcategory ID to category's Subcategory array
+    await categorySchema.findByIdAndUpdate(
+      foundCategory._id,
       { $push: { Subcategory: subcategory._id } },
       { new: true }
     );
-    res.status(201).json({ message: "subcategory created", subcategory });
+
+    res.status(201).json({ message: "Subcategory created", subcategory });
   } catch (error) {
+    console.error("Subcategory Error:", error); // Log actual error
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -54,4 +64,4 @@ const DeleteSubCatagory = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-module.exports = { SubcategoryContoller, UpdateSubCategory, DeleteSubCatagory };
+module.exports = { SubcategoryController, UpdateSubCategory, DeleteSubCatagory };
